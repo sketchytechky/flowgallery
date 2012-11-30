@@ -300,8 +300,14 @@
             // }
           }
 
+          var noAnimateCSS = ['z-index', '-webkit-transform', '-moz-transform', '-ms-transform', 'transform'];
+          var baseCSS = {};
+          $.each(noAnimateCSS, function (i,css) {
+            baseCSS[css]=config[css]||'';
+          });
+          $listItem.css(baseCSS);
+
           if(animate) {
-            $listItem.css({ 'z-index' : config['z-index'] });  // apply z-index first or there will be overlap
             $listItem.stop().animate(config, { duration: options.duration, easing: options.easing, complete: completeFn });
           } else {
             $listItem.css(config);
@@ -381,18 +387,21 @@
           var cy = centerY+radiusAdjusted;
           var angle = options.arcanglestep*(activeIndex - index) + (3*Math.PI / 2);
           var baseXOffset = isBefore ? 200 : -200;
-          var rotateStr = 'rotate('+angle+')';
           config = {
             left: centerX + radiusAdjusted * Math.cos(angle) + baseXOffset,
-            top : cy + radiusAdjusted * Math.sin(angle), 
-            '-webkit-transform': rotateStr,
-            '-moz-transform': rotateStr,
-            '-ms-transform': rotateStr,
-            'transform': rotateStr,
+            top : cy + radiusAdjusted * Math.sin(angle)
           };
-          //var distX = Math.abs(centerX - left);
-          //var angle = Math.asin(optiosn.arcradius)
-          //'-webkit-transform': 'rotate(15deg) scale(1.25, 0.5)',
+          if (options.arcrotate) {
+            // need to reverse the extra 3pi/2 rotation
+            var rotateStr = 'rotate('+Math.round((angle-(3*Math.PI / 2))*100)/100+'rad)';
+            $.extend(config, {
+              '-webkit-transform': rotateStr,
+              '-moz-transform': rotateStr,
+              '-ms-transform': rotateStr,
+              'transform': rotateStr
+            });
+            console.info("ROTATE: "+rotateStr);
+          }
         }
         return config;
     };

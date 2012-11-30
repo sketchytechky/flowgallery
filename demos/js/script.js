@@ -116,9 +116,10 @@ $(function() {
   };
 
   var initArc = function() {
-    $("#gallery-container").show();
-    $("#gallery-multi-container").hide();
-    $('#gallery').flowgallery({
+    $("#gallery-multi-container").show();
+    $("#gallery-container").hide();
+    $('#gallery-multi').flowgallery({
+      multirow : true,
       arcradius : 2000,
       arcanglestep : (Math.PI/40),
       arcrotate : true,
