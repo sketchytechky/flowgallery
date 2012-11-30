@@ -46,6 +46,9 @@ $(function() {
       case '#demo_scripting':
         initDemoScripting();
         break;
+      case '#demo_multirow':
+        initMultRowDemo();
+        break;
     }
   });
 
@@ -77,6 +80,23 @@ $(function() {
 
   var initDemoScripting = function() {
     $('#gallery').flowgallery({
+      easing: 'easeOutCubic'
+    });
+    console.log("check: ", $('#gallery').data('flowgallery'));
+  };
+
+  var initDemoScripting = function() {
+    $('#gallery').flowgallery({
+      easing: 'easeOutCubic'
+    });
+    console.log("check: ", $('#gallery').data('flowgallery'));
+  };
+
+  var initMultRowDemo = function() {
+    $("#gallery-container").hide();
+    $("#gallery-multi-container").show();
+    $('#gallery-multi').flowgallery({
+      multirow : true,
       easing: 'easeOutCubic'
     });
     console.log("check: ", $('#gallery').data('flowgallery'));

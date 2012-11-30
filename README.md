@@ -9,15 +9,29 @@ Demo and Documentation: http://flowgallery.org
 
 The required markup for the image gallery is a simple unordered list of images:
 
-	<ul id="gallery">
-	  <li><img src="..." title="image caption text" alt="image" /></li>
-	  <li><img src="..." title="image caption text" alt="image" /></li>
-	  <li><img src="..." title="image caption text" alt="image" /></li>
-	  <li><img src="..." title="image caption text" alt="image" /></li>
-	  <li><img src="..." title="image caption text" alt="image" /></li>
-	  <li><img src="..." title="image caption text" alt="image" /></li>
-	</ul>
-
+    <ul id="gallery-multi">
+        <li>
+        <ul>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+        </ul>
+        </li>
+        <li>
+        <ul>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+        </ul>
+        </li>
+        <li>
+        <ul>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+            <li><img src="..." title="image caption text" alt="image" /></li>
+        </ul>
+        </li>
+    </ul>
 
 For basic usage with default settings, select the appropriate list and initialize as follows: 
 
@@ -28,6 +42,40 @@ $("#gallery").flowGallery({
 </pre>
 
 There are many additional configuration options, see project website for more details: http://flowgallery.org.
+
+## Example additional feature ##
+
+### Multiple rows of photos ###
+
+Allow multiple row of photos to be shown, each move with each other in synchronous mode
+
+    <ul id="gallery">
+        <ul>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+        </ul>
+        <ul>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+        </ul>
+        <ul>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+          <li><img src="..." title="image caption text" alt="image" /></li>
+        </ul>
+    </ul>
+
+This can be controlled by the multirowsync attribute.
+
+<pre>
+$("#gallery").flowGallery({
+  multirow: true,
+  multirowsync : true, // determine if the left right movement is synchronized
+  easing: 'easeOutCubic',
+});
+</pre>
 
 ## Dependencies ##
 

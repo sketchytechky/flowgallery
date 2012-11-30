@@ -24,6 +24,7 @@
           <option value="#demo_equal_size">Equal Image Sizes (no scaling)</option>
           <option value="#demo_multiple_galleries">Multiple galleries on same page</option>
           <option value="#demo_scripting">Controlling gallery through script</option>
+          <option value="#demo_multirow">Showing multiple row in gallery</option>
         </select>
       </div><!-- #nav -->
       <ul id="tab-bar" class="clearfix">
@@ -34,16 +35,18 @@
     </div><!-- #header -->
     <div id="content">
       <div id="demo-tab">
-        <ul id="gallery">
-          <li><img src="images/gallery/img3.jpg" alt="fractal3" title="Photo used under Creative Commons from http://www.flickr.com/photos/tulipvorlax/4324232714" /></li>
-          <li><img src="images/gallery/img6.jpg" alt="fractal6" /></li>
-          <li><img src="images/gallery/img8.jpg" alt="fractal8" title="Photo used under Creative Commons from http://www.flickr.com/photos/santarosa/222051450/" /></li>
-          <li><img src="images/gallery/img2.jpg" alt="fractal2" title="Photo used under Creative Commons from http://www.flickr.com/photos/arenamontanus/3408610381" /></li>
-          <li><img src="images/gallery/img7.jpg" alt="fractal7" title="Photo used under Creative Commons from http://www.flickr.com/photos/creative_stock/3521504068/" /></li>
-          <li><img src="images/gallery/img9.jpg" alt="fractal9" title="Photo used under Creative Commons from http://www.flickr.com/photos/edyoung/219659441/" /></li>
-          <li><img src="images/gallery/img1.jpg" alt="fractal1" title="Photo used under Creative Commons from http://www.flickr.com/photos/tristanf/61276046/" /></li>
-          <li><img src="images/gallery/img4.jpg" alt="fractal4" title="Photo used under Creative Commons from http://www.flickr.com/photos/fotoosvanrobin/4452778850/" /></li>
-        </ul>
+        <div id="gallery-container">
+          <ul id="gallery">
+            <li><img src="images/gallery/img3.jpg" alt="fractal3" title="Photo used under Creative Commons from http://www.flickr.com/photos/tulipvorlax/4324232714" /></li>
+            <li><img src="images/gallery/img6.jpg" alt="fractal6" /></li>
+            <li><img src="images/gallery/img8.jpg" alt="fractal8" title="Photo used under Creative Commons from http://www.flickr.com/photos/santarosa/222051450/" /></li>
+            <li><img src="images/gallery/img2.jpg" alt="fractal2" title="Photo used under Creative Commons from http://www.flickr.com/photos/arenamontanus/3408610381" /></li>
+            <li><img src="images/gallery/img7.jpg" alt="fractal7" title="Photo used under Creative Commons from http://www.flickr.com/photos/creative_stock/3521504068/" /></li>
+            <li><img src="images/gallery/img9.jpg" alt="fractal9" title="Photo used under Creative Commons from http://www.flickr.com/photos/edyoung/219659441/" /></li>
+            <li><img src="images/gallery/img1.jpg" alt="fractal1" title="Photo used under Creative Commons from http://www.flickr.com/photos/tristanf/61276046/" /></li>
+            <li><img src="images/gallery/img4.jpg" alt="fractal4" title="Photo used under Creative Commons from http://www.flickr.com/photos/fotoosvanrobin/4452778850/" /></li>
+          </ul>
+        </div>
 
         <!--div id="gallery2">
           <li><img src="images/gallery/img3.jpg" alt="fractal3" title="Photo used under Creative Commons from http://www.flickr.com/photos/tulipvorlax/4324232714" /></li>
@@ -56,6 +59,31 @@
           <li><img src="images/gallery/img4.jpg" alt="fractal4" title="Photo used under Creative Commons from http://www.flickr.com/photos/fotoosvanrobin/4452778850/" /></li>
         </div-->
 
+        <div id="gallery-multi-container" style="display:none;">
+            <ul id="gallery-multi">
+                <li>
+                <ul>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                </ul>
+                </li>
+                <li>
+                <ul>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                </ul>
+                </li>
+                <li>
+                <ul>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                    <li><img src="fixtures/images/450x300.png" title="image caption text" alt="image" /></li>
+                </ul>
+                </li>
+            </ul>
+        </div>
       </div>
       <div id="html-tab">
         <pre>HTML markup...</pre>
