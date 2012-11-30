@@ -66,7 +66,9 @@ describe("FlowGalleryConfig", function() {
       $gallery.flowgallery({
         imagePadding: targetPadding
       });
-      expect( $gallery.find('li').first().css('padding') ).toEqual(targetPadding + 'px');
+      // padding get broken down into left/right/top/bottom
+      //expect( $gallery.find('li').first().css('padding') ).toEqual(targetPadding + 'px');
+      expect( $gallery.find('li').first().css('padding-left') ).toEqual(targetPadding + 'px');
       // add 10px for extra padding on caption
       expect( $gallery.parent().find('p.fg-caption').css('padding-left') ).toEqual((targetPadding + 10) + 'px');
     });
