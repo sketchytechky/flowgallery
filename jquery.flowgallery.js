@@ -57,6 +57,7 @@
 
       if (!options.multirow) {
           self.length = $list.children().length;
+          self.rowlength = 1;
       } else {
           // find the count of .item
           // <ul id=gallery> <li> <ul> <li class=item> <img...>
