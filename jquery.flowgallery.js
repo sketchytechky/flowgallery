@@ -187,8 +187,10 @@
 
     function onItemClicked(e) {
       var item = $(this).data('flowItem');
-      // option.multirow: no need to consider row here since we always row horizontally
       if(item !== activeItem) {
+        if (self.activeRow !== item.row) {
+          self.activeRow = item.row;
+        }
         var oldIndex = activeIndex;
         flowInDir(item.index-oldIndex);
       } else if(options.forwardOnActiveClick===true) {
@@ -245,14 +247,16 @@
           currentItem = flowItems[i];
           $listItem = currentItem.$el;
 
+          isBefore = (i<=activeIndex);
+
           if( $listItem.hasClass('active') ) {
             config = {
               left: (centerX - options.imagePadding - currentItem.w * 0.5) + 'px', top: '0',
               width: currentItem.w+'px',
               height: currentItem.h+'px',
-              padding: options.imagePadding+'px'
+              padding: options.imagePadding+'px',
+              'z-index': 100   // ensure active item is top
             };
-            isBefore = false;
             completeFn = afterFlowHandler;
 
             // animate list size if active image height has changed
@@ -273,7 +277,8 @@
           } else {
             config = {
               left: calculateLeftPosition(i, isBefore),
-              top: (centerY - currentItem.th*0.5) + 'px'
+              top: (centerY - currentItem.th*0.5) + 'px',
+              'z-index': 0 
             };
 
             completeFn = null;
@@ -289,6 +294,7 @@
           }
 
           if(animate) {
+            $listItem.css({ 'z-index' : config['z-index'] });  // apply z-index first or there will be overlap
             $listItem.stop().animate(config, { duration: options.duration, easing: options.easing, complete: completeFn });
           } else {
             $listItem.css(config);
@@ -353,20 +359,20 @@
         i = 0;
 
       if (isBefore) {
-        left -= flowItems[activeIndex].w*0.5;
+        left -= flowRows[activeRow][activeIndex].w*0.5;
         left -= options.imagePadding;
         left -= (activeIndex - current) * 10;
         left -= (activeIndex - current) * 2 * options.thumbPadding;
         for (i = current; i < activeIndex; i++) {
-          left -= flowItems[i].tw;
+          left -= flowRows[activeRow][i].tw;
         }
       } else {
-        left += flowItems[activeIndex].w*0.5;
+        left += flowRows[activeRow][activeIndex].w*0.5;
         left += options.imagePadding;
         left += (current - activeIndex) * 10;
         left += (current - activeIndex) * 2 * options.thumbPadding;
         for (i = activeIndex + 1; i < current; i++) {
-          left += flowItems[i].tw;
+          left += flowRows[activeRow][i].tw;
         }
       }
       return left + 'px';
@@ -425,7 +431,6 @@
     // handle key events
     function handleKeyEvents(e) {
       if(e.keyCode==38) { // up arrow key
-        debugger;
         flowChangeRow(1);
       } else if (e.keyCode==40) { // down arrow key
         flowChangeRow(-1);
