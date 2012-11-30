@@ -277,14 +277,6 @@
               }
             }
           } else {
-            /*
-            config = {
-              left: calculateLeftPosition(i, isBefore),
-              top: (centerY - currentItem.th*0.5) + 'px',
-              'z-index': 0 
-            };
-            */
-
             config = calculateOffset(currentItem,i,j,isBefore,centerX,centerY);
             config['z-index'] = 0;
 
@@ -400,7 +392,6 @@
               '-ms-transform': rotateStr,
               'transform': rotateStr
             });
-            console.info("ROTATE: "+rotateStr);
           }
         }
         return config;
@@ -548,6 +539,9 @@
     activeIndex: 0,          // index of image that is initially active
     activeRow: 0,            // index of default active Row
     animate: true,
+    arcradius: false,
+    arcrotate: false,   // can if we rotate image based on arc
+    arcanglestep : false, // in radian for each step
     backgroundColor: 'black',
     circular: false,
     duration: 900,            // animation duration (higher value = slower speed)

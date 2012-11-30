@@ -84,8 +84,8 @@ Thumbnails to be placed in an arc
 <pre>
 $("#gallery").flowGallery({
   arcradius: 500,
-  rotate: 'auto',   // can specifiy absolute number, auto to fllow circle
-  // arcsegment: 0.4 // TODO: segment of arc to be used
+  arcrotate: true,   // can if we rotate image based on arc
+  arcanglestep : (Math.PI/40) // in radian for each step
   easing: 'easeOutCubic',
 });
 </pre>

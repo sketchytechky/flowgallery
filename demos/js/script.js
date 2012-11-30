@@ -110,6 +110,7 @@ $(function() {
     $("#gallery-multi-container").show();
     $('#gallery-multi').flowgallery({
       multirow : true,
+      arcradius: false,
       easing: 'easeOutCubic'
     });
     console.log("check: ", $('#gallery').data('flowgallery'));
