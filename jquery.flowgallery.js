@@ -30,6 +30,8 @@
       $caption = false,       // caption element
       activeItem = false,     // reference to active FlowItem
       activeIndex = 0,
+      activeRow = 0,
+      rowlength = 1,          // default one row
       listWidth = 0,          // list width (default: screen width)
       listHeight = 0,         // list height (height of highest image)
       flowItems = [],         // array of FlowItems
@@ -51,7 +53,14 @@
       options = $.extend({}, FlowGallery.defaults, config, metadata);
       $container = $list.parent();
 
-      self.length = $list.children().length;
+      if (!options.multirow) {
+          self.length = $list.children().length;
+      } else {
+          // find the count of .item
+          // <ul id=gallery> <li> <ul> <li class=item> <img...>
+          self.rowlength = $list.children().length;
+          self.length = $list.find("ul:first").children.length;
+      }
       self.options = options;
 
       initDom();
@@ -87,6 +96,7 @@
 
 
     // initialize caption - a single instance is shared by all images
+    // TODO: share caption
     function initCaption() {
       var captionElem = document.createElement('p');
       $caption = $(captionElem).addClass('fg-caption').css({
@@ -114,22 +124,32 @@
 
     function initFlowItems() {
       self.enabled = false;
-      // loop through list items to extract image data and determine list height
-      $list.children().each(function(index) {
+
+      var initItem = function(index, row) {
         var flowItem = new FlowItem(this, index, options);
         if(!flowItem.$el) { return; }
 
         flowItem.$el.on('loaded', onItemLoaded);
         flowItem.$el.on('click', onItemClicked);
 
+        //TODO: activeIndex becomes multiple index
         if(!activeItem && options.activeIndex===index) {
-          flowItem.$el.addClass('active');
-          activeItem = flowItem;
-          activeIndex = index;
+            flowItem.$el.addClass('active');
+            activeItem = flowItem;
+            activeIndex = index;
         }
 
         flowItems.push(flowItem);
-      });
+      };
+      
+      // loop through list items to extract image data and determine list height
+      if (!options.multirow) {
+        $list.children().each(initItem);
+      } else {
+        $list.children().each(function (row,nested) {
+            $(nested).find('ul').children().each(function (i) { initItem({ 'index': i, 'row' : row }); });
+        });
+      }
 
       self.enabled = true;
       listWidth = $container.width();
@@ -139,8 +159,8 @@
 
     function onItemLoaded() {
       var item = $(this).data('flowItem');
-      updateListHeight(item.h);
-      if(item.index===options.activeIndex) {
+      updateListHeight(item.h * this.rowlength);
+      if(item.index===options.activeIndex && item.row===options.activeRow) {
         self.activeLoaded = true;
         updateFlow(true);
       } else if(self.activeLoaded && (item.th !== options.loadingHeight || item.tw !== options.loadingWidth)) {
@@ -151,6 +171,7 @@
 
     function onItemClicked(e) {
       var item = $(this).data('flowItem');
+          // TODO: no need to consider row here since we always row horizontally
       if(item !== activeItem) {
         var oldIndex = activeIndex;
         flowInDir(item.index-oldIndex);
@@ -364,7 +385,7 @@
     function updateListHeight(height) {
       if(height > listHeight) {
         listHeight = height;
-        listHeight += options.imagePadding*2;
+        listHeight += options.imagePadding*2*this.rowlength;
         $list.height(listHeight);
       }
     };
@@ -446,6 +467,7 @@
     loadingClass: "loading", // css class applied to <li> elements of loading images
     loadingHeight: 60,       // loading height to use if cannot be determined
     loadingWidth: 100,       // loading width to use if cannot be determined
+    multirow: false,        // show multiple row of galleries
     thumbHeight: 'auto',
     thumbPadding: 0,         // border of thumbnails
     thumbTopOffset: 'auto',  // top offset in pixels or 'auto' for centering images within list height
@@ -459,7 +481,13 @@
       $img = false;
 
     this.$el = $(elem);
-    this.index = index;
+    this.row = 0;
+    if (typeof(index) === 'object') {
+        this.index = index.index;
+        this.row = index.row;  // row number of the element
+    } else {
+        this.index = index;
+    }
 
     this.h = 0;               // image height
     this.th = 0;              // thumb height
