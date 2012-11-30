@@ -1,6 +1,6 @@
-describe("FlowGallery", function() {
+describe("FlowGallery.multi", function() {
 
-  describe("basic setup with default config", function() {
+  describe("basic setup with multi-gallery config", function() {
     var $gallery, $el, api, clock,
         fullImageHeight = 400,
         fullImageWidth = 250;
@@ -23,7 +23,7 @@ describe("FlowGallery", function() {
       clock.restore();
     });
 
-    describe('gallery list', function() {
+    describe('multi-gallery list', function() {
       it('should be visible', function() {
         expect( $gallery.css('visibility') ).toEqual('visible');
       });
