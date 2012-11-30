@@ -35,7 +35,7 @@
       listWidth = 0,          // list width (default: screen width)
       rowHeight = 0,          // row height (height of highest image)
       listHeight = 0,         // list height
-      flowItems = [],         // array of FlowItems
+      //flowItems = [],         // array of FlowItems
       flowRows = [],          // row of flows (used with options.multirow)
       elCounter = 0,          // number of list items
       resizeWhileDisabled = false;
@@ -61,7 +61,7 @@
           // find the count of .item
           // <ul id=gallery> <li> <ul> <li class=item> <img...>
           self.rowlength = $list.children().length;
-          self.length = $list.find("ul:first").children.length;
+          self.length = $list.find("ul:first").children().length;
       }
       self.options = options;
 
@@ -126,6 +126,7 @@
 
     function initFlowItems() {
       self.enabled = false;
+      var flowItems = [];
 
       var initItem = function(index,item) {
         var flowItem = new FlowItem(item, index, options);
@@ -233,7 +234,7 @@
         i,j;
 
       for(j=0; j<flowRows.length; j++) {
-        flowItems = flowRows[j];
+        var flowItems = flowRows[j];
 
         // update centerY based on active image
         centerY = options.thumbTopOffset==='auto' ? activeItem.h*0.5 : options.thumbTopOffset;
@@ -313,15 +314,15 @@
       var newIndex = activeIndex + dir;
       animate = animate!==undefined ? animate : options.animate;
 
-      if(newIndex > flowItems.length-1 || newIndex < 0) {
+      if(newIndex > self.length-1 || newIndex < 0) {
         return false;
       }
 
       activeItem.oldActive = true; // mark old active item
       if(dir<0 && activeIndex > 0) {
-        flowItems[activeIndex].oldActive = true;
+        activeItem.oldActive = true;
         activeIndex += dir;
-      } else if(dir>0 && activeIndex < flowItems.length-1) {
+      } else if(dir>0 && activeIndex < self.length-1) {
         activeIndex += dir;
       } else {
         return false;
