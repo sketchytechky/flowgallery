@@ -3,7 +3,10 @@ describe("FlowGallery.multi", function() {
   describe("basic setup with multi-gallery config", function() {
     var $gallery, $el, api, clock,
         fullImageHeight = 400,
-        fullImageWidth = 250;
+        fullImageWidth = 250,
+        thumbHeight = 100, //XXX this might change in code
+        thumbTop = 1172;
+
 
     beforeEach(function() {
       clock = sinon.useFakeTimers();
@@ -33,7 +36,7 @@ describe("FlowGallery.multi", function() {
       });
 
       it('should set non-active images to thumbnail size', function() {
-        var $images = $gallery.find('li').not('.active');
+        var $images = $gallery.find('li ul li').not('.active');
         var expectedHeight = Math.round(fullImageHeight * 100 / fullImageWidth);
         $images.each(function(index) {
           expect( $(this).width() ).toEqual(100); // set loadingWidth since both thumbHeight and thumbWidth set to 'auto'
@@ -47,11 +50,10 @@ describe("FlowGallery.multi", function() {
         $rows.each(function (i,e) {
           var $images = $(this).find('li');
           expect( $images.length ).toEqual(3);
-          var expectedTop = i*100+100;
+          var lastLeft = 0;
           $images.each(function(index) {
             var offset = $(this).offset();
-            //expect( offset.top ).toEqual(expectedTop);
-            expect( offset.left ).toEqual(200*index);
+            expect( offset.left ).toBeGreaterThan(lastLeft);
           });
         });
       });
@@ -60,9 +62,9 @@ describe("FlowGallery.multi", function() {
         var $rows = $gallery.find('li ul');
         expect( $rows.length ).toEqual(3);
         $rows.each(function (i,e) {
-          var $images = $(this).find('li');
-          expect( $images.length ).toEqual(3);
-          var expectedTop = i*100+100;
+          var $images = $(this).find('li').not('.active');
+          //expect( $images.length ).toEqual(3);
+          var expectedTop = i*thumbHeight+thumbTop;
           $images.each(function(index) {
             var offset = $(this).offset();
             expect( offset.top ).toEqual(expectedTop);
@@ -103,6 +105,10 @@ describe("FlowGallery.multi", function() {
 
     describe("synchronized movements", function () {
         //TODO 
+        // 1. left, right scroll stay on same row
+        // 2. up down scroll change row
+        // 3. click on different row should make a difference
+        // XXX: 4. animation on changing row
 
     });
 
