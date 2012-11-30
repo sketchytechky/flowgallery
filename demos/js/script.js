@@ -54,6 +54,8 @@ $(function() {
 
 
   var initDemoDefault = function() {
+    $("#gallery-container").show();
+    $("#gallery-multi-container").hide();
     $('#gallery').flowgallery({
       easing: 'easeOutCubic'
     });
@@ -63,6 +65,8 @@ $(function() {
   };
 
   var initDemoEqualSize = function() {
+    $("#gallery-container").show();
+    $("#gallery-multi-container").hide();
     $('#gallery').flowgallery({
       easing: 'easeOutCubic',
       imagePadding: 0,
@@ -73,12 +77,16 @@ $(function() {
   };
 
   var initDemoMultipleGalleries = function() {
+    $("#gallery-container").show();
+    $("#gallery-multi-container").hide();
     $('#gallery').flowgallery({
       easing: 'easeOutCubic'
     });
   };
 
   var initDemoScripting = function() {
+    $("#gallery-container").show();
+    $("#gallery-multi-container").hide();
     $('#gallery').flowgallery({
       easing: 'easeOutCubic'
     });
@@ -86,6 +94,8 @@ $(function() {
   };
 
   var initDemoScripting = function() {
+    $("#gallery-container").show();
+    $("#gallery-multi-container").hide();
     $('#gallery').flowgallery({
       easing: 'easeOutCubic'
     });
@@ -104,5 +114,6 @@ $(function() {
 
   // init default
   initDemoDefault();
+  //initMultRowDemo();
 
 });

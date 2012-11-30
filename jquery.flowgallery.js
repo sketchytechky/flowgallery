@@ -35,6 +35,7 @@
       listWidth = 0,          // list width (default: screen width)
       listHeight = 0,         // list height (height of highest image)
       flowItems = [],         // array of FlowItems
+      flowRows = [],          // row of flows (used with options.multirow)
       elCounter = 0,          // number of list items
       resizeWhileDisabled = false;
 
@@ -125,18 +126,25 @@
     function initFlowItems() {
       self.enabled = false;
 
-      var initItem = function(index, row) {
-        var flowItem = new FlowItem(this, index, options);
+      var initItem = function(index,item) {
+        var flowItem = new FlowItem(item, index, options);
         if(!flowItem.$el) { return; }
 
         flowItem.$el.on('loaded', onItemLoaded);
         flowItem.$el.on('click', onItemClicked);
 
-        //TODO: activeIndex becomes multiple index
-        if(!activeItem && options.activeIndex===index) {
+        if(!activeItem) {
+          if (!options.multirow && options.activeIndex===index) {
             flowItem.$el.addClass('active');
             activeItem = flowItem;
             activeIndex = index;
+          }
+          else if (options.multirow && options.activeIndex===index.index && options.activeRow===index.row) {
+            flowItem.$el.addClass('active');
+            activeItem = flowItem;
+            activeIndex = index.index;
+            activeRow = index.row;
+          }
         }
 
         flowItems.push(flowItem);
@@ -145,9 +153,13 @@
       // loop through list items to extract image data and determine list height
       if (!options.multirow) {
         $list.children().each(initItem);
+        flowRows.push(flowItems);
       } else {
         $list.children().each(function (row,nested) {
-            $(nested).find('ul').children().each(function (i) { initItem({ 'index': i, 'row' : row }); });
+            flowItems = [];  // reset for the row
+            $(nested).find('ul').children().each(function (i,e) { initItem({ 'index': i, 'row' : row },e); });
+            if (flowItems.length == 0) { throw "No item added to flowItems"; }
+            flowRows.push(flowItems);
         });
       }
 
@@ -171,7 +183,7 @@
 
     function onItemClicked(e) {
       var item = $(this).data('flowItem');
-          // TODO: no need to consider row here since we always row horizontally
+      // option.multirow: no need to consider row here since we always row horizontally
       if(item !== activeItem) {
         var oldIndex = activeIndex;
         flowInDir(item.index-oldIndex);
@@ -196,9 +208,9 @@
 
 
     // special afterFlow handler for previously active item
-    function getOldActiveAfterFlowHandler(itemIndex) {
+    function getOldActiveAfterFlowHandler(itemIndex,rowIndex) {
       return function() {
-        var item = flowItems[itemIndex];
+        var item = flowRows[rowIndex][itemIndex];
         item.oldActive = false;
       };
     };
@@ -207,69 +219,76 @@
     function updateFlow(animate) {
       if(!self.isEnabled()) { return false; }
 
+      //TODO: need breakage here
       var config = {},
         isBefore = true,   // in loop, are we before 'active' item
         completeFn = null, // callback method to call after animation (for 'active' item)
         currentItem = false,
         $listItem = false,
-        itemsLength = flowItems.length,
-        i;
+        i,j;
 
-      // update centerY based on active image
-      centerY = options.thumbTopOffset==='auto' ? activeItem.h*0.5 : options.thumbTopOffset;
+      for(j=0; j<flowRows.length; j++) {
+        flowItems = flowRows[j];
 
-      for(i=0; i<itemsLength; i++) {
-        currentItem = flowItems[i];
-        $listItem = currentItem.$el;
+        // update centerY based on active image
+        centerY = options.thumbTopOffset==='auto' ? activeItem.h*0.5 : options.thumbTopOffset;
+        //XXX
+        centerY += j*flowItems[0].h;
 
-        if( $listItem.hasClass('active') ) {
-          config = {
-            left: (centerX - options.imagePadding - currentItem.w * 0.5) + 'px', top: '0',
-            width: currentItem.w+'px',
-            height: currentItem.h+'px',
-            padding: options.imagePadding+'px'
-          };
-          isBefore = false;
-          completeFn = afterFlowHandler;
+        var itemsLength = flowItems.length;
+        for(i=0; i<itemsLength; i++) {
+          currentItem = flowItems[i];
+          $listItem = currentItem.$el;
 
-          // animate list size if active image height has changed
-          if(listHeight !== currentItem.h) {
-            listHeight = currentItem.h;
-            listHeight += options.imagePadding*2;
-            if(animate) {
-              $list.stop().animate({
-                height: listHeight
-              }, {
-                duration: options.duration,
-                easing: options.easing
-              });
-            } else {
-              $list.height(listHeight);
+          if( $listItem.hasClass('active') ) {
+            config = {
+              left: (centerX - options.imagePadding - currentItem.w * 0.5) + 'px', top: '0',
+              width: currentItem.w+'px',
+              height: currentItem.h+'px',
+              padding: options.imagePadding+'px'
+            };
+            isBefore = false;
+            completeFn = afterFlowHandler;
+
+            // animate list size if active image height has changed
+            if(listHeight !== currentItem.h) {
+              listHeight = currentItem.h;
+              listHeight += options.imagePadding*2;
+              if(animate) {
+                $list.stop().animate({
+                  height: listHeight
+                }, {
+                  duration: options.duration,
+                  easing: options.easing
+                });
+              } else {
+                $list.height(listHeight);
+              }
             }
-          }
-        } else {
-          config = {
-            left: calculateLeftPosition(i, isBefore),
-            top: (centerY - currentItem.th*0.5) + 'px'
-          };
+          } else {
+            config = {
+              left: calculateLeftPosition(i, isBefore),
+              top: (centerY - currentItem.th*0.5) + 'px'
+            };
 
-          completeFn = null;
+            completeFn = null;
 
-          // TODO: rethink oldActive check, need to set width/height on first render
-          // only animate width/height for old active item
-          // if(currentItem.oldActive) {
+            // TODO: rethink oldActive check, need to set width/height on first render
+            // only animate width/height for old active item
+            // if(currentItem.oldActive) {
             config.width = currentItem.tw+'px';
             config.height = currentItem.th+'px';
             config.padding = options.thumbPadding+'px';
-            completeFn = getOldActiveAfterFlowHandler(i);
-          // }
-        }
+            completeFn = getOldActiveAfterFlowHandler(i,j);
+            // }
+          }
 
-        if(animate) {
-          $listItem.stop().animate(config, { duration: options.duration, easing: options.easing, complete: completeFn });
-        } else {
-          $listItem.css(config);
-          if(completeFn) { completeFn(); }
+          if(animate) {
+            $listItem.stop().animate(config, { duration: options.duration, easing: options.easing, complete: completeFn });
+          } else {
+            $listItem.css(config);
+            if(completeFn) { completeFn(); }
+          }
         }
       }
     };
