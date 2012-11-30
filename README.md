@@ -72,10 +72,24 @@ This can be controlled by the multirowsync attribute.
 <pre>
 $("#gallery").flowGallery({
   multirow: true,
-  multirowsync : true, // determine if the left right movement is synchronized
   easing: 'easeOutCubic',
 });
 </pre>
+
+
+### Putting elements in an arc ###
+
+Thumbnails to be placed in an arc
+
+<pre>
+$("#gallery").flowGallery({
+  arcradius: 500,
+  rotate: 'auto',   // can specifiy absolute number, auto to fllow circle
+  // arcsegment: 0.4 // TODO: segment of arc to be used
+  easing: 'easeOutCubic',
+});
+</pre>
+
 
 ## Dependencies ##
 

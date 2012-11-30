@@ -277,11 +277,16 @@
               }
             }
           } else {
+            /*
             config = {
               left: calculateLeftPosition(i, isBefore),
               top: (centerY - currentItem.th*0.5) + 'px',
               'z-index': 0 
             };
+            */
+
+            config = calculateOffset(currentItem,i,j,isBefore,centerX,centerY);
+            config['z-index'] = 0;
 
             completeFn = null;
 
@@ -355,6 +360,42 @@
       centerX = listWidth*0.5;
     };
 
+    function calculateOffset(item,index,row,isBefore,centerX,centerY) {
+        var centerY = options.thumbTopOffset==='auto' ? activeItem.h*0.5 : options.thumbTopOffset;
+        //XXX self.th was not defined here
+        centerY += (self.th || 100) * row; //j*flowItems[0].h;
+      
+        var config = {
+          left: calculateLeftPosition(index, isBefore),
+          top: (centerY - item.th*0.5) + 'px',
+        };
+
+        if (options.arcradius) {
+          //XXX: currently just approximate
+          // we "bend the x,y from center X, centerY"
+          /* // parametric...
+          x = cx + r * cos(a)
+          y = cy + r * sin(a)
+          */
+          var radiusAdjusted = options.arcradius - (100 * row);
+          var cy = centerY+radiusAdjusted;
+          var angle = options.arcanglestep*(activeIndex - index) + (3*Math.PI / 2);
+          var baseXOffset = isBefore ? 200 : -200;
+          var rotateStr = 'rotate('+angle+')';
+          config = {
+            left: centerX + radiusAdjusted * Math.cos(angle) + baseXOffset,
+            top : cy + radiusAdjusted * Math.sin(angle), 
+            '-webkit-transform': rotateStr,
+            '-moz-transform': rotateStr,
+            '-ms-transform': rotateStr,
+            'transform': rotateStr,
+          };
+          //var distX = Math.abs(centerX - left);
+          //var angle = Math.asin(optiosn.arcradius)
+          //'-webkit-transform': 'rotate(15deg) scale(1.25, 0.5)',
+        }
+        return config;
+    };
 
     function calculateLeftPosition(current, isBefore) {
       var left = centerX,

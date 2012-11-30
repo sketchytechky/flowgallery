@@ -49,6 +49,9 @@ $(function() {
       case '#demo_multirow':
         initMultRowDemo();
         break;
+      case '#demo_arc':
+        initArc();
+        break;
     }
   });
 
@@ -112,8 +115,21 @@ $(function() {
     console.log("check: ", $('#gallery').data('flowgallery'));
   };
 
+  var initArc = function() {
+    $("#gallery-container").show();
+    $("#gallery-multi-container").hide();
+    $('#gallery').flowgallery({
+      arcradius : 2000,
+      arcanglestep : (Math.PI/40),
+      arcrotate : true,
+      easing: 'easeOutCubic'
+    });
+    console.log("check: ", $('#gallery').data('flowgallery'));
+  };
+
   // init default
   //initDemoDefault();
-  initMultRowDemo();
+  //initMultRowDemo();
+  initArc();
 
 });
