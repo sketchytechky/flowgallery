@@ -41,6 +41,21 @@ describe("FlowGallery.multi", function() {
         });
       });
 
+      it ('should be divided into correct left position', function () {
+        var $rows = $gallery.find('li ul');
+        expect( $rows.length ).toEqual(3);
+        $rows.each(function (i,e) {
+          var $images = $(this).find('li');
+          expect( $images.length ).toEqual(3);
+          var expectedTop = i*100+100;
+          $images.each(function(index) {
+            var offset = $(this).offset();
+            //expect( offset.top ).toEqual(expectedTop);
+            expect( offset.left ).toEqual(200*index);
+          });
+        });
+      });
+
       it ('should be divided into multiple rows', function () {
         var $rows = $gallery.find('li ul');
         expect( $rows.length ).toEqual(3);
@@ -49,7 +64,9 @@ describe("FlowGallery.multi", function() {
           expect( $images.length ).toEqual(3);
           var expectedTop = i*100+100;
           $images.each(function(index) {
-            expect( $(this).offset().top ).toEqual(expectedTop);
+            var offset = $(this).offset();
+            expect( offset.top ).toEqual(expectedTop);
+            //expect( offset.left ).toEqual(200*index);
           });
         });
       });
