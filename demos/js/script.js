@@ -113,7 +113,7 @@ $(function() {
   };
 
   // init default
-  initDemoDefault();
-  //initMultRowDemo();
+  //initDemoDefault();
+  initMultRowDemo();
 
 });

@@ -15,7 +15,7 @@
    * @return {string}
    */
   var getVersion = function () {
-    return "0.7.0pre";
+    return "0.7.0pre-multi";
   };
 
   var FlowGallery = function(list, config) {
@@ -31,9 +31,10 @@
       activeItem = false,     // reference to active FlowItem
       activeIndex = 0,
       activeRow = 0,
-      rowlength = 1,          // default one row
+      //rowlength = 1,          // default one row
       listWidth = 0,          // list width (default: screen width)
-      listHeight = 0,         // list height (height of highest image)
+      rowHeight = 0,          // row height (height of highest image)
+      listHeight = 0,         // list height
       flowItems = [],         // array of FlowItems
       flowRows = [],          // row of flows (used with options.multirow)
       elCounter = 0,          // number of list items
@@ -158,9 +159,12 @@
         $list.children().each(function (row,nested) {
             flowItems = [];  // reset for the row
             $(nested).find('ul').children().each(function (i,e) { initItem({ 'index': i, 'row' : row },e); });
-            if (flowItems.length == 0) { throw "No item added to flowItems"; }
             flowRows.push(flowItems);
         });
+      }
+
+      if (!activeItem) {
+        throw "No active item picked!";
       }
 
       self.enabled = true;
@@ -171,7 +175,7 @@
 
     function onItemLoaded() {
       var item = $(this).data('flowItem');
-      updateListHeight(item.h * this.rowlength);
+      updateListHeight(item.h + (options.thumbHeight * self.rowlength));
       if(item.index===options.activeIndex && item.row===options.activeRow) {
         self.activeLoaded = true;
         updateFlow(true);
@@ -219,7 +223,6 @@
     function updateFlow(animate) {
       if(!self.isEnabled()) { return false; }
 
-      //TODO: need breakage here
       var config = {},
         isBefore = true,   // in loop, are we before 'active' item
         completeFn = null, // callback method to call after animation (for 'active' item)
@@ -232,8 +235,10 @@
 
         // update centerY based on active image
         centerY = options.thumbTopOffset==='auto' ? activeItem.h*0.5 : options.thumbTopOffset;
-        //XXX
-        centerY += j*flowItems[0].h;
+        //XXX self.th was not defined here
+        centerY += (self.th || 100) * j; //j*flowItems[0].h;
+
+        if(!centerY) { throw "No centerY defined!"; }
 
         var itemsLength = flowItems.length;
         for(i=0; i<itemsLength; i++) {
@@ -315,7 +320,14 @@
       } else {
         return false;
       }
-      activeItem = flowItems[activeIndex];
+      activeItem = flowRows[activeRow][activeIndex];
+      prepareFlow();
+      updateFlow(animate);
+    };
+
+    function flowChangeRow (dir, animate) {
+      activeRow = (activeRow+self.rowlength+dir) % self.rowlength;
+      activeItem = flowRows[activeRow][activeIndex];
       prepareFlow();
       updateFlow(animate);
     };
@@ -404,7 +416,7 @@
     function updateListHeight(height) {
       if(height > listHeight) {
         listHeight = height;
-        listHeight += options.imagePadding*2*this.rowlength;
+        listHeight += options.imagePadding*2*self.rowlength;
         $list.height(listHeight);
       }
     };
@@ -412,7 +424,12 @@
 
     // handle key events
     function handleKeyEvents(e) {
-      if(e.keyCode===37) { // right arrow key
+      if(e.keyCode==38) { // up arrow key
+        debugger;
+        flowChangeRow(1);
+      } else if (e.keyCode==40) { // down arrow key
+        flowChangeRow(-1);
+      } else if(e.keyCode===37) { // right arrow key
         flowInDir(-1);
       } else if(e.keyCode===39) { // left arrow key
         flowInDir(1);
@@ -469,10 +486,10 @@
     init();
   };
 
-
   // default option values
   FlowGallery.defaults = {
     activeIndex: 0,          // index of image that is initially active
+    activeRow: 0,            // index of default active Row
     animate: true,
     backgroundColor: 'black',
     circular: false,
