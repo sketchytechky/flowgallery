@@ -242,8 +242,6 @@
         //XXX self.th was not defined here
         centerY += (self.th || 100) * j; //j*flowItems[0].h;
 
-        if(!centerY) { throw "No centerY defined!"; }
-
         var itemsLength = flowItems.length;
         for(i=0; i<itemsLength; i++) {
           currentItem = flowItems[i];

@@ -124,7 +124,8 @@ $(function() {
       arcradius : 2000,
       arcanglestep : (Math.PI/40),
       arcrotate : true,
-      easing: 'easeOutCubic'
+      easing: 'easeOutCubic',
+      thumbTopOffset : 0,  //XXX: this break things!
     });
     console.log("check: ", $('#gallery').data('flowgallery'));
   };
