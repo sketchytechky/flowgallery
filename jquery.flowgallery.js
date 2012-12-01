@@ -84,14 +84,19 @@
     // initialize dom setup and styling
     function initDom() {
       // set required styling on list element
-      $list.css({
+      $list.css($.extend({
         listStyle: 'none',
         overflow: 'hidden',
         marginLeft: '0',
         paddingLeft: '0',
         position: 'relative',
         width: '100%'
-      });
+      }, options.containerCSS));
+
+      // if listHeight is defined in css, use it
+      if (options.containerCSS.height) {
+          listHeight = options.containerCSS.height;
+      }
 
       initCaption();
       initWrapper();
@@ -271,7 +276,10 @@
                   easing: options.easing
                 });
               } else {
-                $list.height(listHeight);
+                // only change list height if it is smaller
+                if (listHeight < currentItem.h) { 
+                  $list.height(listHeight);
+                }
               }
             }
           } else {
@@ -556,7 +564,8 @@
     thumbHeight: 'auto',
     thumbPadding: 0,         // border of thumbnails
     thumbTopOffset: 'auto',  // top offset in pixels or 'auto' for centering images within list height
-    thumbWidth: 'auto'
+    thumbWidth: 'auto',
+    containerCSS : {}   // extra css option for container (e.g. control height)
   };
 
 
