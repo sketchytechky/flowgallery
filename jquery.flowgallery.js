@@ -375,8 +375,8 @@
           */
           var radiusAdjusted = options.arcradius - (100 * row);
           var cy = centerY+radiusAdjusted;
-          var angle = options.arcanglestep*(activeIndex - index) + (3*Math.PI / 2);
-          var baseXOffset = isBefore ? 200 : -200;
+          var angle = options.arcanglestep*(index - activeIndex) + (3*Math.PI / 2);
+          var baseXOffset = isBefore ? -200 : 200;
           config = {
             left: centerX + radiusAdjusted * Math.cos(angle) + baseXOffset,
             top : cy + radiusAdjusted * Math.sin(angle)
